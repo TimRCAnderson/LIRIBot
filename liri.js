@@ -88,24 +88,26 @@ Album: ${songInfo.album}
       //Title of the movie, Year the movie came out, IMDB Rating of the movie, Country where the movie was produced, Language of the movie, Plot of the movie, Actors in the movie, Rotten Tomatoes Rating, Rotten Tomatoes URL.
       //default: Mr. Nobody
       var title = param || "Mr Nobody";
-      console.log(title);
-      var queryURL = "http://www.omdbapi.com/?t=" + title.trim().split(" ").join("+") + "&plot=short&r=json";
+      var queryURL = "http://www.omdbapi.com/?t=" + title.trim().split(" ").join("+") + "&plot=short&r=json&tomatoes=true";
       request(queryURL, function(error, response, body) {
         if(!error)
         {
+          body = JSON.parse(body);
           var ratingLookup = {};
-          for (var i = 0, len = array.length; i < len; i++)
+          for (var i = 0, len = body.Ratings.length; i < len; i++)
           {
-            ratingLookup[body.Ratings[i].source] = body.Ratings[i];
+            ratingLookup[body.Ratings[i].Source] = body.Ratings[i];
           }
+          console.log(JSON.stringify(ratingLookup));
           var appendString = `Title: ${body.Title}
 Year: ${body.Year}
-IMDB Rating: ${ratingLookup["Internet Movie Database"].value}
+IMDB Rating: ${ratingLookup["Internet Movie Database"].Value}
 Country: ${body.Country}
 Language: ${body.Language}
 Plot: ${body.Plot}
 Actors: ${body.Actors}
-Rotten Tomatoes Rating: ${ratingLookup["Rotten Tomatoes"]}
+Rotten Tomatoes Rating: ${ratingLookup["Rotten Tomatoes"].Value}
+Rotten Tomatoes URL: ${body.tomatoURL}
 `
           fs.appendFile("log.txt", appendString, function(error) {
             if(!error)
