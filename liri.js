@@ -98,7 +98,6 @@ Album: ${songInfo.album}
           {
             ratingLookup[body.Ratings[i].Source] = body.Ratings[i];
           }
-          console.log(JSON.stringify(ratingLookup));
           var appendString = `Title: ${body.Title}
 Year: ${body.Year}
 IMDB Rating: ${ratingLookup["Internet Movie Database"].Value}
